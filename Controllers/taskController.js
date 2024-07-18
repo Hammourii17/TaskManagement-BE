@@ -15,9 +15,18 @@ const createTask = async (req, res) => {
 
 const getTasks = async (req, res) => {
   const userId = req.user.id;
+  const { dueDate, priority, completed, sortBy, sortOrder } = req.query;
+
+  let filter = { userId };
+  if (dueDate) filter.dueDate = dueDate;
+  if (priority) filter.priority = priority;
+  if (completed) filter.completed = completed;
+
+  let sort = {};
+  if (sortBy) sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
 
   try {
-    const tasks = await Task.find({ userId });
+    const tasks = await Task.find(filter).sort(sort);
     res.json(tasks);
   } catch (error) {
     res.status(400).json({ error: error.message });
