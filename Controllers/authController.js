@@ -13,11 +13,13 @@ const signup = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({ error: 'User already exists' });
     }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = new User({ username, email, password });
+    const user = new User({ username, email, password: hashedPassword });
     await user.save();
+    const token = jwt.sign({ userId: user._id }, config.jwtSecret, { expiresIn: '1h' });
 
-    res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: 'User created successfully', token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

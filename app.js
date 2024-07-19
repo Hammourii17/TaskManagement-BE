@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config');
 const authRoutes = require('./Routes/auth');
-const taskRoutes = require('./routes/tasks');
+const taskRoutes = require('./Routes/tasks');
 
 const app = express();
 
@@ -13,14 +13,14 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/tasks', taskRoutes);
 
-// Connect to MongoDB
-mongoose.connect(config.dbUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => {
+mongoose.connect(config.dbUri).then(() => {
   console.log('Connected to MongoDB');
 }).catch(err => {
   console.error('Error connecting to MongoDB', err);
 });
+
+// app.listen(config.port, () => {
+//   console.log(`Server running on port ${config.port}`);
+// });
 
 module.exports = app;
