@@ -1,4 +1,3 @@
-// Models/blacklist.js
 const mongoose = require('mongoose');
 
 const blacklistSchema = new mongoose.Schema({
@@ -9,7 +8,7 @@ const blacklistSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: '1h' // TTL for automatic deletion after 1 hour
+    expires: '1h' 
   }
 });
 

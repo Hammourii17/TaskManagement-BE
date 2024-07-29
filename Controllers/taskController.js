@@ -2,19 +2,20 @@ const Task = require('../models/task');
 
 const createTask = async (req, res) => {
   const { title, description, dueDate, priority } = req.body;
-  const userId = req.user.id;
+  const userId = req.user ? req.user._id : null;
 
   try {
     const task = new Task({ userId, title, description, dueDate, priority });
     await task.save();
     res.status(201).json(task);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error creating task:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
 const getTasks = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user._id;
   const { dueDate, priority, completed, sortBy, sortOrder } = req.query;
 
   let filter = { userId };
@@ -29,7 +30,8 @@ const getTasks = async (req, res) => {
     const tasks = await Task.find(filter).sort(sort);
     res.json(tasks);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error getting tasks:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -43,7 +45,8 @@ const getTaskById = async (req, res) => {
     }
     res.json(task);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error getting task by ID:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -58,7 +61,8 @@ const updateTask = async (req, res) => {
     }
     res.json(task);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error updating task:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
@@ -72,7 +76,8 @@ const deleteTask = async (req, res) => {
     }
     res.json({ message: 'Task deleted successfully' });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error('Error deleting task:', error);
+    res.status(500).json({ error: error.message });
   }
 };
 
